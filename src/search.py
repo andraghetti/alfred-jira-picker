@@ -78,19 +78,18 @@ def format_results(response, original_query):
 
 def process_query(alfred_query):
     """Entry point function"""
-    if len(alfred_query) >= 3:
-        response = get_response(alfred_query)
-        results = format_results(response, alfred_query)
-        sys.stdout.write(results)
-    else:
-        sys.stdout.write(
-            json.dumps({'items': [{
-                'title': 'write at least the first 3 letters of the project'}]
-            })
-        )
+    if len(alfred_query) < 3:
+        return json.dumps({
+            'items': [{
+                'title': 'write at least the first 3 letters of the project'
+            }]
+        })
+    response = get_response(alfred_query)
+    return format_results(response, alfred_query)
 
 
 if __name__ == u"__main__":
     logging.getLogger().setLevel(logging.DEBUG)
     logging.debug('input: %s', sys.argv[1])
-    process_query(alfred_query=sys.argv[1])
+    results = process_query(alfred_query=sys.argv[1])
+    sys.stdout.write(results)
